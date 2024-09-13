@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 88
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    "python-fastapi"
+]
+[tool.poetry.dependencies]
+pydantic-settings = "*"
