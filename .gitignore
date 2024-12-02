@@ -1,0 +1,19 @@
+# Local Environment
+env
+venv
+
+# Config file
+.env
+.env.docker
+.env.local
+
+*__pycache__*
+
+# Test files
+*.coverage
+
+# Temp files
+tmp/
+temp/
+*.xml
+.idea
