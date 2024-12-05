@@ -22,5 +22,11 @@ docs for more detail on building and pushing.
 * even when env file is there docker compose fails to read it.
   * run as `docker compose --env-file .env.docker up`
 
+### Running Redis
+To run Redis, use the following command:
+```bash
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+```
+
 ### References
 * [Docker's Python guide](https://docs.docker.com/language/python/)

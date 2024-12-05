@@ -87,32 +87,6 @@ services:
       - .env.docker
     networks:
       - fast-api-network
-  pmm-server:
-    image: percona/pmm-server:latest
-    ports:
-      - "443:443"
-    volumes:
-      - pmm-data:/srv
-    environment:
-      SERVER_USER: admin
-      SERVER_PASSWORD: admin
-    env_file:
-      - .env.docker
-    networks:
-      - fast-api-network
-
-  pmm-client:
-    image: percona/pmm-client:latest
-    environment:
-      PMM_SERVER: pmm-server
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/host:ro
-    env_file:
-      - .env.docker
-    networks:
-      - fast-api-network
   locust-master:
     image: locustio/locust
     ports:
