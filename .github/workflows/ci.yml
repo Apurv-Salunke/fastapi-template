@@ -1,8 +1,15 @@
 name: FastAPI-CI
-'on':
+# Assigning permissions to jobs
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
+on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     types:
       - opened
@@ -10,6 +17,7 @@ name: FastAPI-CI
       - reopened
     branches:
       - main
+      - dev
 jobs:
   test:
     runs-on: ubuntu-latest
