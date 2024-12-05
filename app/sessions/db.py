@@ -45,11 +45,11 @@ elif "PYTHON_FASTAPI_TEMPLATE_CLUSTER_SECRET" in os.environ:
     USERNAME = dbSecretParsed["username"]
     PASSWORD = dbSecretParsed["password"]
 
-    engine = create_engine(f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}/{DBNAME}")
+    engine = create_engine(f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}")
 
 else:
     print("Connecting local database..\n")
-    engine = create_engine(f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}/{DBNAME}")
+    engine = create_engine(f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}")
 
 meta = MetaData()
 
@@ -59,7 +59,7 @@ meta = MetaData()
 try:
     conn = engine.connect()
     print("-------------------------- Database connected ----------------------------")
-    print(f"{{ \n\tdb_uri: mysql:{USERNAME}@{HOST}/{DBNAME} \n }}")
+    print(f"{{ \n\tdb_uri: postgresql:{USERNAME}@{HOST}:{PORT}/{DBNAME} \n }}")
     print("\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 except Exception as e:
     print(f"Failed to connect to database. Error: {e}")
@@ -68,9 +68,18 @@ except Exception as e:
 localSession = Session(engine)
 
 
+def get_db_url() -> str:
+    return f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+
+
+# Update engine creation to use get_db_url
+engine = create_engine(get_db_url())
+
+
 def create_local_session() -> Generator[Session, None, None]:
     """Factory function that returns a new session object"""
-    engine = create_engine(f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}")
+    # Update engine creation to use get_db_url
+    engine = create_engine(get_db_url())
     session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = session_local()
     try:

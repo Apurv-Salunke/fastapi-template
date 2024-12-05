@@ -17,8 +17,7 @@ class DBSettings(BaseSettings):
 class Settings(DBSettings):
     SECRET_KEY: str
     REDIS_URL: str
-    SENTRY_DSN: str | None
-    SLACK_WEBHOOK_URL: str | None
+    # SLACK_WEBHOOK_URL: str | None
     ALLOWED_HOSTS: list = ["*"]
     CACHE_MAX_AGE: int = 60
 
