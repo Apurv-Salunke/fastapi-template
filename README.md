@@ -72,7 +72,6 @@ This repository provides a template for creating and deploying a FastAPI project
 - Feature flagging to enable/disable features
 - Readily available CRUD operations
 - Readily available middlewares for rate limiting, request id injection etc
-- Error reporting using Sentry
 - Type checking using mypy
 - Linting using flake8
 - Formatting using black
@@ -120,7 +119,6 @@ DB_PASSWORD=
 ```
 Additional Configuration (Optional):
 ```
-SENTRY_DSN=
 SLACK_WEBHOOK_URL=
 DB_ROOT_PASSWORD=
 ```
