@@ -1,7 +1,6 @@
 name: FastAPI-CI
 # Assigning permissions to jobs
 permissions:
-  contents: write
   checks: write
   pull-requests: write
 

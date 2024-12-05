@@ -68,9 +68,18 @@ except Exception as e:
 localSession = Session(engine)
 
 
+def get_db_url() -> str:
+    return f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+
+
+# Update engine creation to use get_db_url
+engine = create_engine(get_db_url())
+
+
 def create_local_session() -> Generator[Session, None, None]:
     """Factory function that returns a new session object"""
-    engine = create_engine(f"postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}")
+    # Update engine creation to use get_db_url
+    engine = create_engine(get_db_url())
     session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = session_local()
     try:
