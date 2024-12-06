@@ -6,11 +6,14 @@ from pydantic import BaseSettings
 
 
 def get_env_file():
-    if os.getenv("ENV") == "production":
+    if os.getenv("ENVIRONMENT_NAME") == "production":
+        print("Using production env file")
         return ".env.production"
-    elif os.getenv("ENV") == "docker":
+    elif os.getenv("ENVIRONMENT_NAME") == "docker":
+        print("Using docker env file")
         return ".env.docker"
     else:
+        print("Using local env file")
         return ".env.local"
 
 

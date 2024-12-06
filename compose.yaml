@@ -1,116 +1,101 @@
 services:
-  print-env:
-    image: alpine
-    command: ["sh", "-c", "env"]
-    env_file:
-      - .env.docker
   db:
     image: postgres:latest
     restart: always
-    env_file:
-      - .env.docker
     environment:
-      - POSTGRES_USER=${DB_USERNAME:-fastapi_user}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-your_secure_password}
-      - POSTGRES_DB=${DB_NAME:-fastapi_db}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_DB=${DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "echo 'SELECT 1' | mysql -hlocalhost -uroot -p${DB_ROOT_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 3s
       retries: 3
+      start_period: 10s
     depends_on:
       - redis
     volumes:
       - db:/var/lib/postgresql/data
-      # Uncomment only if you have SQL scripts to run on container startup
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      # ! Uncomment only if you have SQL scripts to run on container startup
+      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
-      - fast-api-network
+      - fastapi-network
 
   redis:
     image: redis:6-alpine
     restart: always
-    env_file:
-      - .env.docker
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]
     networks:
-      - fast-api-network
-
-  wait-for-db:
-    image: atkrad/wait4x
-    depends_on:
-      db:
-        condition: service_healthy
-    command: tcp db:${DB_PORT} -t 30s -i 250ms
-    env_file:
-      - .env.docker
-    networks:
-      - fast-api-network
+      - fastapi-network
 
   app:
     build: .
     restart: always
-    container_name: fast-api-app
-    env_file:
-      - .env.docker
+    container_name: fastapi-app
     depends_on:
-      wait-for-db:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
-      ENVIRONMENT_NAME: "${ENVIRONMENT_NAME}"
+      ENVIRONMENT_NAME: "${ENVIRONMENT_NAME}" # !remove this & move to env file
     networks:
-      - fast-api-network
+      - fastapi-network
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ['celery', '-A', 'app.app.celery', 'worker', '-l', 'info']
-    env_file:
-      - .env.docker
+    # command: ['celery', '-A', 'app.app.celery', 'worker', '-l', 'info']
+    command: ["worker"]
     depends_on:
       - redis
-      - app
+    environment:
+      ENVIRONMENT_NAME: "${ENVIRONMENT_NAME}" # !remove this & move to env file
     networks:
-      - fast-api-network
+      - fastapi-network
 
-  flower:
-    image: mher/flower:0.9.7
-    command: ['flower', '--broker=${REDIS_URL}/6', '--port=5555']
-    ports:
-      - 5556:5555
-    depends_on:
-      - redis
-      - worker
-    env_file:
-      - .env.docker
-    networks:
-      - fast-api-network
+  # ! Uncomment only if you want to use celery flower (needs some fixing)
+  # flower:
+  #   image: mher/flower:0.9.7
+  #   command: ["flower", "--broker=${REDIS_URL}/6", "--port=5555"]
+  #   ports:
+  #     - 5556:5555
+  #   depends_on:
+  #     - redis
+  #     - worker
+  #   networks:
+  #     - fastapi-network
+
+  # ! Uncomment only if you want to use locust
   locust-master:
     image: locustio/locust
     ports:
-      - "8089:8089"  # Expose Locust's web interface on port 8089
+      - "8089:8089"
     volumes:
-      - ./loadtests:/mnt/locust  # Mount the loadtests directory into the container
-    command: -f /mnt/locust --master -H http://app:"${SERVER_PORT}"  # Start Locust in master mode, pointing to your FastAPI application
-    env_file:
-      - .env.docker
+      - ./loadtests:/mnt/locust
+    command: -f /mnt/locust --master -H http://app:"${SERVER_PORT}"
     networks:
-      - fast-api-network
+      - fastapi-network
+
   locust-worker:
     image: locustio/locust
     volumes:
-      - ./loadtests:/mnt/locust  # Mount the loadtests directory into the container
+      - ./loadtests:/mnt/locust
     command: -f /mnt/locust --worker --master-host locust-master
-    env_file:
-      - .env.docker
     networks:
-      - fast-api-network
+      - fastapi-network
+
 networks:
-  fast-api-network:
+  fastapi-network:
     driver: bridge
 
 volumes:
   db:
-  pmm-data:

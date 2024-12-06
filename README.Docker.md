@@ -1,3 +1,22 @@
+### ENV FILE
+
+```bash
+SECRET_KEY=your_secret_key
+# Database Configuration
+DB_NAME=fastapi-template
+DB_HOSTNAME=db # Use the service name defined in docker-compose.yml
+DB_PORT=5432 # Default PostgreSQL port
+DB_USERNAME=fastapi_template_user
+DB_PASSWORD=your_secure_password
+DB_ROOT_PASSWORD=your_root_password
+# Additional Configuration
+REDIS_URL=redis://redis:6379 # Redis URL based on service name defined in docker-compose.yml
+SLACK_WEBHOOK_URL=
+# Docker Configuration
+ENVIRONMENT_NAME=docker
+SERVER_PORT=8000
+```
+
 ### Building and running your application
 
 When you're ready, start your application by running:

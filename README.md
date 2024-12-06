@@ -267,3 +267,9 @@ If you are new to AWS Copilot or you want to learn more about AWS Copilot, pleas
 - [ ] Observability, Logging and Tracing (New Relic or Prometheus/Grafana).
 - [ ] AWS Copilot for CD.
 - [ ] Sonarqube for CI.
+
+### Issues
+- [ ] DB environment variable needs to be set to the correct value.
+  `2024-12-07 00:07:38 2024-12-06 18:37:38.367 UTC [541] FATAL:  role "root" does not exist`
+- [ ] Flower does not work on ARM64.
+  `replace mher/flower:0.9.7 with custom image.`
