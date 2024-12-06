@@ -4,18 +4,18 @@
 -- =============================================
 
 -- Enable the pg_stat_statements extension
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+-- CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
 
 -- Create a dedicated monitoring user
-CREATE USER pmm_monitor WITH PASSWORD 'G#4JrLpM8B$eJ#N';
+-- CREATE USER pmm_monitor WITH PASSWORD 'G#4JrLpM8B$eJ#N';
 
 -- Grant necessary permissions to the monitoring user
-GRANT pg_monitor TO pmm_monitor;
-GRANT SELECT ON pg_stat_statements TO pmm_monitor;
+-- GRANT pg_monitor TO pmm_monitor;
+-- GRANT SELECT ON pg_stat_statements TO pmm_monitor;
 
 -- Optional: Grant access to additional system views for deeper monitoring
-GRANT SELECT ON pg_stat_activity TO pmm_monitor;
-GRANT SELECT ON pg_stat_database TO pmm_monitor;
+-- GRANT SELECT ON pg_stat_activity TO pmm_monitor;
+-- GRANT SELECT ON pg_stat_database TO pmm_monitor;
 
 -- Query examples for performance monitoring (pg_stat_statements)
 -- View the top 5 most time-consuming queries

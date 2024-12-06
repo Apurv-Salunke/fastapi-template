@@ -20,7 +20,7 @@ openai==0.27.7
 openapi-schema-pydantic==1.2.4
 openpyxl==3.1.2
 pre-commit
-psycopg2==2.9.6
+psycopg2-binary==2.9.6
 pybreaker
 pydantic==1.10.8
 pyjwt

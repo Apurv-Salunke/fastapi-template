@@ -26,5 +26,3 @@ cp .env.example .env.local
 echo "Enabling Pre Commit Hooks"
 pre-commit install
 echo
-
-opentelemetry-bootstrap --action=install

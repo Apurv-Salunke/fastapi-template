@@ -1,6 +1,17 @@
 from __future__ import annotations
 
+import os
+
 from pydantic import BaseSettings
+
+
+def get_env_file():
+    if os.getenv("ENV") == "production":
+        return ".env.production"
+    elif os.getenv("ENV") == "docker":
+        return ".env.docker"
+    else:
+        return ".env.local"
 
 
 class DBSettings(BaseSettings):
@@ -11,7 +22,7 @@ class DBSettings(BaseSettings):
     DB_PASSWORD: str
 
     class Config:
-        env_file = ".env.local"
+        env_file = get_env_file()
 
 
 class Settings(DBSettings):
@@ -22,7 +33,7 @@ class Settings(DBSettings):
     CACHE_MAX_AGE: int = 60
 
     class Config:
-        env_file = ".env.local"
+        env_file = get_env_file()
 
     def check_environment_variables(self):
         if not self.DB_HOSTNAME or not self.DB_PORT or not self.DB_NAME or not self.DB_USERNAME or not self.DB_PASSWORD:
