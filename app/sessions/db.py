@@ -8,7 +8,7 @@ from collections.abc import Generator
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
